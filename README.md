@@ -1,6 +1,8 @@
 # 📡 Webhook Tester Util
 
-**Webhook Tester Util** helps you test incoming requests from external applications and correctly integrate them. It starts a simple web server using **Node.js (Express.js)** and listens on **port 15777 by default**. The server captures all types of requests and returns useful debugging information such as URL, params, query, token, and body.
+**Webhook Tester Util** helps you test incoming requests from external applications and correctly integrate them. It starts a simple web server using **Node.js (Express.js)** and listens on **port 15777 by default**. The server captures all types of requests and returns useful debugging information such as URL, params, query, token, and body.  
+
+It can be useful for applications with event-based reporting, like jitsi-meet, zoom (room-created, user-joined, etc.) and etc.
 
 ---
 
@@ -9,10 +11,11 @@
 You can install and run Webhook Tester Util using one of the following methods:
 ### 0. Prerequisites
 
-Docker must be installed
+**Docker** must be installed if you use option 1 and 2 (Recommended)  
+**Node.js** must be installed if you use option 3
 
 
-### 1. Quick Install (Recommended)
+### 1. Quick Install (Bash script)
 
 ```bash
 wget -O init.sh https://raw.githubusercontent.com/mmstf/webhook-tester/refs/heads/master/init.sh
@@ -20,7 +23,7 @@ chmod +x init.sh
 sudo ./init.sh
 ```
 
-This script downloads and starts the Webhook Tester automatically.
+This [script](https://raw.githubusercontent.com/mmstf/webhook-tester/refs/heads/master/init.sh) downloads app image, setups nginx configuration and starts the Webhook Tester automatically.
 
 ### 2. Manual Installation (Docker)
 
@@ -49,23 +52,22 @@ npm start
 
 Webhook Tester Util supports configuration via **environment variables**:
 
-| Variable       | Default                 | Description                             |
-| -------------- | ----------------------- | --------------------------------------- |
-| `PORT`         | `15777`                 | Port to listen on                       |
-| `JWT_SECRET`   | `string`                | JWT token decoder for incoming requests |
-| `NGINX_CONFIG` | `proxy_pass port:15777` | Path to custom Nginx configuration      |
+| Variable       | Default                 | Description                                    |
+| -------------- | ----------------------- |------------------------------------------------|
+| `PORT`         | `15777`                 | Port to listen on                              |
+| `JWT_SECRET`   | `string`                | JWT token secret, if Bearer token is specified |
 
 For Docker, set environment variables like this:
 
 ```bash
-docker run -d -p 8080:15777 -e PORT=8080 mmstf/webhook-tester:v1.0.0
+docker run -d --name webhook-tester-util -p 8080:15777 -e PORT=8080 -e JWT_SECRET=another-string mmstf/webhook-tester:v1.0.0
 ```
 
-For manual setup, create a **.env** file:
+For manual setup, export envs:
 
 ```ini
-PORT=8080
-JWT_SECRET=debug
+export PORT=8080
+export JWT_SECRET=string
 ```
 
 And start the server:
@@ -80,7 +82,7 @@ npm start
 
 ### 🔥 Testing Webhooks
 
-Once the server is running, send requests to `http://your-server-ip:15777`:
+Once the server is running, you can send requests manually to `http://your-webhook-domain` or specify you webhook-domain to your application:
 
 ```bash
 curl -X POST http://localhost:15777/webhook \
@@ -88,20 +90,25 @@ curl -X POST http://localhost:15777/webhook \
   -d '{"message": "Hello, Webhook!"}'
 ```
 
+You can check logs 
+```bash
+docker logs webhook-tester-util
+```
+
 **Example Response:**
 
-```json
-Webhook data {
-  "endpoint": "/request-endpoint",
+```string
+[INFO] Webhook Data {
+  "endpoint": "/webhook",
   "httpMethod": "POST",
-  "authToken": "eyJhbGciOiJIUzI1NiIsIXVCJ9.eSI6IkpvaGRtydWUsImlhdCI6MTUxNjIzOTAyMn0.KMUFsIDTn9FNFUqJp-QV30",
-  "query": {...},
-  "body": {...},
-  "decodedTokenPayload": {...}
+  "query": {},
+  "body": {
+    "message": "Hello, Webhook!"
+  }
 }
 ```
 
-### 🔄 Setting Up Nginx Proxy (Optional)
+### 🔄 Setting Up Nginx Proxy Manually (Optional)
 
 If you need to proxy requests through **Nginx**, use this configuration:
 
