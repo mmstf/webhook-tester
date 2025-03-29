@@ -7,4 +7,8 @@ RUN npm i
 COPY . .
 CMD ["npm", "start"]
 
-EXPOSE 3001
+# overriden by env-var
+EXPOSE 15777
+
+# override default server port
+CMD ["sh", "-c", "PORT=${PORT:-15777} npm start"]

@@ -2,35 +2,41 @@ import express from 'express';
 import jwt from 'jsonwebtoken';
 
 const app = express();
-const port = process.env.PORT || 3001;
+const port = process.env.PORT || 15777;
+const jwtSecret = process.env.JWT_SECRET || "string";
 
 app.use(express.json());
 
-app.get('*', async (req, res) => {
+const processWebhook = async (req, res) => {
     try {
-        let authToken = req.headers.authorization ? req.headers.authorization.split(' ')[1] : undefined;
-        const endpoint = req.url
-        const httpMethod = req.method || 'GET';
-        const query = req.query;
+        let authToken;
+        let decodedTokenPayload;
+        
+        if (
+            req.headers.authorization 
+                && (req.headers.authorization.split(' ')[0] === "Bearer")
+        ) {
+            authToken = req.headers.authorization ? req.headers.authorization.split(' ')[1] : undefined;
+        }
 
-        res.json({endpoint, httpMethod, authToken, query})
-    } catch (e) {
-        res.json({error: e})
-    }
-})
+        if (authToken) {
+            decodedTokenPayload = jwt.verify(authToken, jwtSecret)
+        }
 
-app.post('*', async (req, res) => {
-    try {
-        let authToken = req.headers.authorization ? req.headers.authorization.split(' ')[1] : undefined;
         const endpoint = req.url
-        const httpMethod = req.method || 'POST';
+        const httpMethod = req.method || 'ALL';
         const query = req.query;
         const body = req.body;
+        const response = {endpoint, httpMethod, authToken, query, body, decodedTokenPayload}
 
-        res.json({endpoint, httpMethod, authToken, query, body})
+        console.log("Webhook-Data", JSON.stringify(response, null, 2));
+        res.json(response)
     } catch (e) {
-        res.json({error: e});
+        console.error("Error processing webhook:", e);
+        res.status(500).json({errorMessage: e.message});
     }
-})
+}
 
-app.listen(port, () => console.log(`Listening on port ${port}`));
+app.all('*', processWebhook)
+
+app.listen(port, () => console.log(`Webhook Tester Util is Listening on port ${port}`));
