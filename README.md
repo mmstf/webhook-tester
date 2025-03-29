@@ -11,7 +11,7 @@ You can install and run Webhook Tester Util using one of the following methods:
 ### 1️⃣ Quick Install (Recommended)
 
 ```bash
-curl -sSL https://github.com/mmstf/webhook-tester/refs/heads/master/init.sh | bash
+curl -sSL https://raw.githubusercontent.com/mmstf/webhook-tester/refs/heads/master/init.sh | bash
 ```
 
 This script downloads and starts the Webhook Tester automatically.
