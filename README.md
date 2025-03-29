@@ -7,16 +7,22 @@
 ## 🚀 Installation
 
 You can install and run Webhook Tester Util using one of the following methods:
+### 0. Prerequisites
 
-### 1️⃣ Quick Install (Recommended)
+Docker must be installed
+
+
+### 1. Quick Install (Recommended)
 
 ```bash
-curl -sSL https://raw.githubusercontent.com/mmstf/webhook-tester/refs/heads/master/init.sh | bash
+wget -O init.sh https://raw.githubusercontent.com/mmstf/webhook-tester/refs/heads/master/init.sh
+chmod +x init.sh
+sudo ./init.sh
 ```
 
 This script downloads and starts the Webhook Tester automatically.
 
-### 2️⃣ Manual Installation (Docker)
+### 2. Manual Installation (Docker)
 
 If you prefer manual setup, you can use Docker:
 
@@ -26,7 +32,7 @@ docker pull mmstf/webhook-tester:v1.0.0
 docker run -itd mmstf/webhook-tester:v1.0.0 --rm --name webhook-tester-util -p 15777:15777
 ```
 
-### 3️⃣ Manual Installation (Source Code)
+### 3. Manual Installation (Source Code)
 
 If you need to modify the code, clone the repository and run it manually:
 

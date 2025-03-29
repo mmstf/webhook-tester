@@ -18,11 +18,14 @@ is_nginx_installed=$(nginx -v 2>&1 | grep -i version)
 if [[ -n "$debian" ]]; then
     if [[ ! "$is_nginx_installed" ]]; then
         echo "[DEBIAN] Installing nginx with apt..."
+        apt-get update -y
+        apt-get upgrade -y
         apt-get install nginx -y
     fi
 elif [[ -n "$fedora" ]]; then
     if [[ -n $is_nginx_installed ]]; then
         echo "[FEDORA] Installing nginx with yum..."
+        yum update -y
         yum install nginx -y
     fi
 fi
@@ -34,9 +37,9 @@ if [[ -z "$SERVER_NAME" ]]; then
 else
 
     if [[ -n "$debian" ]]; then
-        NGINX_CONFIG="/etc/nginx/sites-available/webhook.test.conf"
+        NGINX_CONFIG="/etc/nginx/sites-available/$SERVER_NAME.conf"
     elif [[ -n "$fedora" ]]; then
-        NGINX_CONFIG="/etc/nginx/conf.d/webhook.test.conf"
+        NGINX_CONFIG="/etc/nginx/conf.d/$SERVER_NAME.conf"
     fi
 
 cat <<EOF | sudo tee $NGINX_CONFIG > /dev/null
@@ -52,6 +55,8 @@ cat <<EOF | sudo tee $NGINX_CONFIG > /dev/null
         }
     }
 EOF
+
+    if [[ -n "$debian" ]]; then ln -s $NGINX_CONFIG /etc/nginx/sites-enabled/"$SERVER_NAME".conf; fi
 
     echo "Nginx configuration for $SERVER_NAME has been created at $NGINX_CONFIG"
 fi
