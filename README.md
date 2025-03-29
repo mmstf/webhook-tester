@@ -60,7 +60,7 @@ Webhook Tester Util supports configuration via **environment variables**:
 For Docker, set environment variables like this:
 
 ```bash
-docker run -d --name webhook-tester-util -p 8080:15777 -e PORT=8080 -e JWT_SECRET=another-string mmstf/webhook-tester:v1.0.0
+docker run -d --name webhook-tester-util -p 8080:8080 -e PORT=8080 -e JWT_SECRET=another-string mmstf/webhook-tester:v1.0.0
 ```
 
 For manual setup, export envs:
