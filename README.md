@@ -114,7 +114,6 @@ If you need to proxy requests through **Nginx**, use this configuration:
 
 ```nginx
 server {
-    listen 80;
     server_name webhook.example.com;
 
     location / {
