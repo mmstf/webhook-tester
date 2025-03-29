@@ -11,4 +11,4 @@ CMD ["npm", "start"]
 EXPOSE 15777
 
 # override default server port
-CMD ["sh", "-c", "PORT=${PORT:-15777} npm start"]
+#CMD ["sh", "-c", "PORT=${PORT:-15777} npm start"]

@@ -14,6 +14,7 @@ debian=$(grep -i debian /etc/os-release)
 fedora=$(grep -i fedora /etc/os-release)
 is_nginx_installed=$(nginx -v 2>&1 | grep -i version)
 
+# check linux distro family
 if [[ -n "$debian" ]]; then
     if [[ ! "$is_nginx_installed" ]]; then
         echo "[DEBIAN] Installing nginx with apt..."
@@ -52,7 +53,7 @@ cat <<EOF | sudo tee $NGINX_CONFIG > /dev/null
     }
 EOF
 
-    echo "✅ Nginx configuration for $SERVER_NAME has been created at $NGINX_CONFIG"
+    echo "Nginx configuration for $SERVER_NAME has been created at $NGINX_CONFIG"
 fi
 
 
